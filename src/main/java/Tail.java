@@ -15,7 +15,7 @@ public class Tail {
         this.numberLine = null;
     }
 
-    public List<String> readerFromFile (String input) throws IOException {   //Читает строки из файла и складывает их в массив
+    public List<String> readerFromFile (String input) throws IOException {   //Читает строки из файла и складывает их в лист
         BufferedReader reader = new BufferedReader(new FileReader(input));
         String line;
         List<String> lines = new ArrayList<String>();
