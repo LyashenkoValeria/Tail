@@ -52,7 +52,7 @@ public class Tail {
         }
         String result = "";
         for (int i = 0; i < resultList.size(); i++){
-            result += resultList.get(i) + "\n";
+            result += resultList.get(i) + "\r\n";
         }
         return result;
     }
@@ -73,7 +73,7 @@ public class Tail {
                     if (line.length() > num) {
                         line = line.substring(line.length() - num);
                     }
-                        result = line + "\n" + result;
+                        result = line + "\r\n" + result;
                         num -= line.length();
                 }
         }
@@ -88,7 +88,7 @@ public class Tail {
             result = getLines(readerFromFile(listOfFiles.get(0)));
         } else {
             for (int i = 0; i < listOfFiles.size(); i++) {
-                result = listOfFiles.get(i) + "\n" + getLines(readerFromFile(listOfFiles.get(i)));
+                result = listOfFiles.get(i) + "\r\n" + getLines(readerFromFile(listOfFiles.get(i)));
             }
         }
             return result;
@@ -102,7 +102,7 @@ public class Tail {
             result = getCharacters(readerFromFile(listOfFiles.get(0)));
         } else {
             for (int i = 0; i < listOfFiles.size(); i++) {
-                result = listOfFiles.get(i) + "\n" + getCharacters(readerFromFile(listOfFiles.get(i)))+"\n";
+                result = listOfFiles.get(i) + "\r\n" + getCharacters(readerFromFile(listOfFiles.get(i)))+"\r\n";
             }
         }
         return result;
