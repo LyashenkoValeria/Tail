@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,11 +7,15 @@ public class Tail {
 
     private Integer numberChar;
     private Integer numberLine;
+    private String ofile;
+    private List<String> inputFiles;
 
 
-    public void tail(Integer numberChar, Integer numberLine){
-        this.numberChar = null;
-        this.numberLine = null;
+    public Tail(Integer numberChar, Integer numberLine, String ofile, List<String> inputFiles){
+        this.numberChar = numberChar;
+        this.numberLine = numberLine;
+        this.ofile = ofile;
+        this.inputFiles = inputFiles;
     }
 
     public List<String> readerFromFile (String input) throws IOException {   //Читает строки из файла и складывает их в лист
@@ -28,51 +31,79 @@ public class Tail {
 
     public List<String> readerFromConsole (){
         List<String> resultList = new ArrayList<String>();
-        System.out.print("Enter input data. To complete, write EnterEnd");
+        System.out.println("Enter data. To complete, write EnterEnd");
         Scanner reader = new Scanner(System.in);
-        String line = "";
-        while (line.equals("EnterEnd")){
-            line = reader.nextLine();
+        String line = reader.nextLine();
+        while (!line.equals("EnterEnd")) {
             resultList.add(line);
+            line = reader.nextLine();
         }
-        resultList.remove(resultList.size() - 1);
         reader.close();
         return resultList;
     }
 
 
 
-    public String getLines(List<String> file, Integer numberLine) throws IOException { //Получает нужное число строк из одного заданного файла
+    public String getLines(List<String> file) throws IOException { //Получает нужное число строк из одного заданного файла
         //На вход подается входной файл в виде листа и число строк, которое нужно извлечь
         List<String> resultList = new ArrayList<String>(); //Лист для считывания нужного числа строк
-        if (file.size() <= numberLine && numberLine > -1) {
+        if (file.size() >= numberLine) {
             resultList = file.subList(file.size() - numberLine, file.size());
         }
         String result = "";
         for (int i = 0; i < resultList.size(); i++){
-            result = resultList.get(i) + "\n";
+            result += resultList.get(i) + "\n";
         }
         return result;
     }
 
 
 
-    public String getCharacters (List<String> file, Integer numberChar) throws IOException { //Получает n количество символов из заданного файла
+    public String getCharacters (List<String> file) throws IOException { //Получает n количество символов из заданного файла
         //На вход получает файл в виде листа и количество символов, которые нужно извлечь
         int count = 0; //Счётчик символов во всём файле
         String result = "";
         for(String i : file){
             count += i.length();
         }
-        if (count >= numberChar && numberChar > 0) {
-                for(int i = file.size(); i > -1 && count>0; i--){
+        int num = numberChar;
+        if (count >= numberChar) {
+                for(int i = file.size()-1; i > -1 && num > 0; i--){
                     String line = file.get(i);
-                    if (line.length() > count) {
-                        line = line.substring(line.length() - count);
+                    if (line.length() > num) {
+                        line = line.substring(line.length() - num);
                     }
                         result = line + "\n" + result;
-                        count -= line.length();
+                        num -= line.length();
                 }
+        }
+        return result;
+    }
+
+
+
+    public String getLinesForSeveralFiles (List<String> listOfFiles) throws IOException {
+        String result = "";
+        if (listOfFiles.size() == 1) {
+            result = getLines(readerFromFile(listOfFiles.get(0)));
+        } else {
+            for (int i = 0; i < listOfFiles.size(); i++) {
+                result = listOfFiles.get(i) + "\n" + getLines(readerFromFile(listOfFiles.get(i)));
+            }
+        }
+            return result;
+    }
+
+
+
+    public String getCharsForSeveralFiles (List<String> listOfFiles) throws IOException {
+        String result = "";
+        if (listOfFiles.size() == 1) {
+            result = getCharacters(readerFromFile(listOfFiles.get(0)));
+        } else {
+            for (int i = 0; i < listOfFiles.size(); i++) {
+                result = listOfFiles.get(i) + "\n" + getCharacters(readerFromFile(listOfFiles.get(i)))+"\n";
+            }
         }
         return result;
     }
@@ -92,4 +123,5 @@ public class Tail {
         System.out.print(output);
     }
 }
+
 
