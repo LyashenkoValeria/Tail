@@ -15,4 +15,16 @@ public class TailTest {
         String[] data = {"-c", "120", "-o", way +"ofile1.txt", way + "file0.txt"};
         TailLauncher.main(data);
     }
+
+    @Test
+    public void fromConsoleToFile() {
+        String[] data = {"-c", "120", "-o", way +"ofile2.txt"};
+        TailLauncher.main(data);
+    }
+
+    @Test
+    public void fromSeveralFilesToFile() {
+        String[] data = {"-c", "120", "-o", way +"ofile1.txt", way + "file0.txt", way + "file1.txt"};
+        TailLauncher.main(data);
+    }
 }
