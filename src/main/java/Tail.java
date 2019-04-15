@@ -88,7 +88,7 @@ public class Tail {
             result = getLines(readerFromFile(listOfFiles.get(0)));
         } else {
             for (int i = 0; i < listOfFiles.size(); i++) {
-                result = listOfFiles.get(i) + "\r\n" + getLines(readerFromFile(listOfFiles.get(i)));
+                result += listOfFiles.get(i) + "\r\n" + getLines(readerFromFile(listOfFiles.get(i)))+ "\r\n";
             }
         }
             return result;
@@ -102,7 +102,7 @@ public class Tail {
             result = getCharacters(readerFromFile(listOfFiles.get(0)));
         } else {
             for (int i = 0; i < listOfFiles.size(); i++) {
-                result = listOfFiles.get(i) + "\r\n" + getCharacters(readerFromFile(listOfFiles.get(i)))+"\r\n";
+                result += listOfFiles.get(i) + "\r\n" + getCharacters(readerFromFile(listOfFiles.get(i))) + "\r\n";
             }
         }
         return result;
