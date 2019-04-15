@@ -12,19 +12,25 @@ public class TailTest {
 
     @Test
     public void fromFileToFile() {
-        String[] data = {"-c", "120", "-o", way +"ofile1.txt", way + "file0.txt"};
+        String[] data = {"-n", "8", "-o", way +"ofile1.txt", way + "file0.txt"};
         TailLauncher.main(data);
     }
 
     @Test
     public void fromConsoleToFile() {
-        String[] data = {"-c", "120", "-o", way +"ofile2.txt"};
+        String[] data = {"-c", "120", "-o", way +"ofile1.txt"};
         TailLauncher.main(data);
     }
 
     @Test
     public void fromSeveralFilesToFile() {
-        String[] data = {"-c", "115", "-o", way +"ofile1.txt", way + "file0.txt", way + "file1.txt"};
+        String[] data = {"-n", "5", "-o", way +"ofile1.txt", way + "file0.txt", way + "file1.txt"};
+        TailLauncher.main(data);
+    }
+
+    @Test
+    public void fromFileToConsole() {
+        String[] data = {"-n", "5", "-o", way +"ofile1.txt", way + "file0.txt", way + "file1.txt"};
         TailLauncher.main(data);
     }
 }
