@@ -34,68 +34,6 @@ public class TailLauncher {
             parser.printUsage(System.err);
             return;
         }
-
-        if (numberLine != null && numberChar != null) {
-            try {
-                throw new IOException("You can't use both flags -c and -n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (numberLine == null && numberChar == null) {
-            numberLine = 10;
-        }
-
-        if (numberLine != null && numberLine < 0) {
-            try {
-                throw new IOException("You can't use negative number with -f");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (numberChar != null && numberChar < 0) {
-            try {
-                throw new IOException("You can't use negative number with -c");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            Tail tail = new Tail(numberChar, numberLine, outputFile, inputFiles);
-             String result;
-
-           if (inputFiles != null) {
-               if (numberLine != null) {
-                   result = tail.getLinesForSeveralFiles(inputFiles);
-               }
-               else {
-                   result = tail.getCharsForSeveralFiles(inputFiles);
-               }
-           }
-           else {
-              List<String> listFromConsole = tail.readerFromConsole();
-              if (numberLine != null) {
-                  result = tail.getLines(listFromConsole);
-              }
-              else
-              {
-                  result = tail.getCharacters(listFromConsole);
-              }
-           }
-
-           if (outputFile != null) {
-               tail.writerInFile(outputFile, result);
-           }
-           else {
-               tail.writerInConsole(result);
-           }
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
     }
-
 }
 

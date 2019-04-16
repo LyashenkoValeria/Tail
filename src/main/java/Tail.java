@@ -18,7 +18,7 @@ public class Tail {
         this.inputFiles = inputFiles;
     }
 
-    public List<String> readerFromFile (String input) throws IOException {   //Читает строки из файла и складывает их в лист
+    public static List<String> reader (String input) throws IOException {//Читает строки из файла и складывает их в лист
         BufferedReader reader = new BufferedReader(new FileReader(input));
         String line;
         List<String> lines = new ArrayList<String>();
@@ -29,19 +29,6 @@ public class Tail {
     }
 
 
-    public List<String> readerFromConsole (){
-        List<String> resultList = new ArrayList<String>();
-        System.out.println("Enter data. To complete, write EnterEnd");
-        Scanner reader = new Scanner(System.in);
-        String line = reader.nextLine();
-        while (!line.equals("EnterEnd")) {
-            resultList.add(line);
-            line = reader.nextLine();
-        }
-        reader.close();
-        return resultList;
-    }
-
 
 
     public String getLines(List<String> file) throws IOException { //Получает нужное число строк из одного заданного файла
@@ -49,6 +36,9 @@ public class Tail {
         List<String> resultList = new ArrayList<String>(); //Лист для считывания нужного числа строк
         if (file.size() >= numberLine) {
             resultList = file.subList(file.size() - numberLine, file.size());
+        }
+        else {
+            throw new IOException("You can't take such a number of lines");
         }
         String result = "";
         for (int i = 0; i < resultList.size(); i++){
@@ -77,6 +67,10 @@ public class Tail {
                         num -= line.length();
                 }
         }
+        else
+        {
+            throw new IOException("You can't such a number of chars");
+        }
         return result;
     }
 
@@ -85,10 +79,10 @@ public class Tail {
     public String getLinesForSeveralFiles (List<String> listOfFiles) throws IOException {
         String result = "";
         if (listOfFiles.size() == 1) {
-            result = getLines(readerFromFile(listOfFiles.get(0)));
+            result = getLines(reader(listOfFiles.get(0)));
         } else {
             for (int i = 0; i < listOfFiles.size(); i++) {
-                result += listOfFiles.get(i) + "\r\n" + getLines(readerFromFile(listOfFiles.get(i)))+ "\r\n";
+                result += listOfFiles.get(i) + "\r\n" + getLines(reader(listOfFiles.get(i)))+ "\r\n";
             }
         }
             return result;
@@ -99,10 +93,10 @@ public class Tail {
     public String getCharsForSeveralFiles (List<String> listOfFiles) throws IOException {
         String result = "";
         if (listOfFiles.size() == 1) {
-            result = getCharacters(readerFromFile(listOfFiles.get(0)));
+            result = getCharacters(reader(listOfFiles.get(0)));
         } else {
             for (int i = 0; i < listOfFiles.size(); i++) {
-                result += listOfFiles.get(i) + "\r\n" + getCharacters(readerFromFile(listOfFiles.get(i))) + "\r\n";
+                result += listOfFiles.get(i) + "\r\n" + getCharacters(reader(listOfFiles.get(i))) + "\r\n";
             }
         }
         return result;
@@ -110,17 +104,67 @@ public class Tail {
 
 
 
-    public void writerInFile (String outputName, String output) throws IOException { //Выводит данные в выходной файл
+    public void writer (String outputName, String output) throws IOException { //Выводит данные в выходной файл
         //На вход получает имя выходного файла и выводимые данные
+        if (ofile == null) {
+            outputName = ".\\src\\main\\java\\ConsoleOut.txt";
+            ofile = ".\\src\\main\\java\\ConsoleOut.txt";
+        }
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
         writer.write(output);
-        writer.close();
+        writer.close();   }
+
+
+
+    public void result()throws IOException{
+
+        if (numberLine != null && numberChar != null) throw new IOException("You can't use both flags -c and -n");
+
+        if (numberLine == null && numberChar == null) {
+            numberLine = 10;
+        }
+
+        if (numberLine != null && numberLine < 0) throw new IOException("You can't use negative number with -n");
+
+        if (numberChar != null && numberChar < 0) throw new IOException("You can't use negative number with -c");
+
+        if (inputFiles != null) {
+            for (int i = 0; i < inputFiles.size(); i++){
+                File in = new File(inputFiles.get(i));
+                if (!in.exists()) throw new IOException("This input file is unreal");
+                }
+            }
+
+            if(ofile != null){
+                File out = new File(ofile);
+                if (!out.exists()) throw new IOException("This output file is unreal");
+            }
+
+
+            String result;
+            if (inputFiles != null) {
+                if (numberLine != null) {
+                    result = getLinesForSeveralFiles(inputFiles);
+                } else {
+                    result = getCharsForSeveralFiles(inputFiles);
+                }
+            }
+            else {
+                String console = ".\\src\\main\\java\\ConsoleIn.txt";
+                if (numberLine != null) {
+                    result = getLines(reader(console));
+                } else {
+                    result = getCharacters(reader(console));
+                }
+            }
+
+            writer(ofile, result);
     }
 
 
 
-    public void writerInConsole(String output){
-        System.out.print(output);
+    public String outFile () {
+        return ofile;
     }
 }
 
