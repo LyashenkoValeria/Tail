@@ -1,3 +1,4 @@
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.*;
@@ -22,6 +23,11 @@ public class TailTest {
     String Expect3 = way + "Expect3.txt";
     String Expect4 = way + "Expect4.txt";
 
+    @After
+    public void deleteFile() {
+        File testFile = new File(way + "ofile.txt");
+        testFile.delete();
+    }
 
     @Test
     public void fromFileToFile() throws IOException{
@@ -135,5 +141,7 @@ public class TailTest {
         final Tail tail = new Tail(null, 10, way + "ofile.txt", input);
         tail.result();
         assertTrue(comparison(Expect1, tail.outFile()));
+
     }
 }
+

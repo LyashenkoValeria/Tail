@@ -24,7 +24,7 @@ public class Tail {
         while ((reader.hasNextLine())){
             lines.add(reader.nextLine());
         }
-        //reader.close();
+        reader.close();
         return (lines);
     }
 
