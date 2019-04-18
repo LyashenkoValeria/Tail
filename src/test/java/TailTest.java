@@ -1,6 +1,6 @@
 import org.junit.Test;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -11,16 +11,16 @@ import org.junit.jupiter.api.function.Executable;
 public class TailTest {
 
     public boolean comparison (String expect, String real) throws IOException {
-        List<String> expectedList = Tail.reader(expect);
-        List<String> realList = Tail.reader(real);
+        List<String> expectedList = Tail.reader(new FileInputStream(expect));
+        List<String> realList = Tail.reader(new FileInputStream(real));
         return expectedList.equals(realList);
     }
 
-    String way = ".\\src\\main\\java\\";
-    String Expect1 = ".\\src\\main\\java\\Expect1.txt";
-    String Expect2 = ".\\src\\main\\java\\Expect2.txt";
-    String Expect3 = ".\\src\\main\\java\\Expect3.txt";
-    String Expect4 = ".\\src\\main\\java\\Expect4.txt";
+    String way = "src" + File.separator + "main" + File.separator + "java" + File.separator;
+    String Expect1 = way + "Expect1.txt";
+    String Expect2 = way + "Expect2.txt";
+    String Expect3 = way + "Expect3.txt";
+    String Expect4 = way + "Expect4.txt";
 
 
     @Test
@@ -35,7 +35,8 @@ public class TailTest {
 
     @Test
     public void fromConsoleToFile() throws IOException {
-        Tail tail = new Tail(10, null, way +"ofile1.txt", null);
+        System.setIn(new FileInputStream(way + "ConsoleIn.txt"));
+        Tail tail = new Tail(25, null, way +"ofile1.txt", null);
         tail.result();
         assertTrue(comparison(Expect2, tail.outFile()));
     }
@@ -52,18 +53,35 @@ public class TailTest {
 
     @Test
     public void fromFileToConsole() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
         List<String> input = new ArrayList<String>();
         input.add(way + "file0.txt");
         Tail tail = new Tail(null, 10, null , input);
         tail.result();
-        assertTrue(comparison(Expect1, tail.outFile()));
+
+        String getFromCons = out.toString();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(way + "ConsoleOut.txt"));
+        writer.write(getFromCons);
+        writer.close();
+        assertTrue(comparison(Expect1, way + "ConsoleOut.txt"));
     }
 
     @Test
     public void fromConsoleToConsole() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        System.setIn(new FileInputStream(way + "ConsoleIn.txt"));
         Tail tail = new Tail(4, null, null, null);
         tail.result();
-        assertTrue(comparison(tail.outFile(), Expect4));
+
+        String getFromCons = out.toString();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(way + "ConsoleOut.txt"));
+        writer.write(getFromCons);
+        writer.close();
+        assertTrue(comparison(Expect4, way + "ConsoleOut.txt"));
     }
 
     @Test
@@ -111,14 +129,11 @@ public class TailTest {
     }
 
     @Test
-    public void writeUnrealFile() {
+    public void writeUnrealFile() throws IOException {
         List<String> input = new ArrayList<String>();
         input.add(way + "file0.txt");
-        final Tail tail = new Tail(null, 7, way + "ofile.txt", input);
-        assertThrows(IOException.class, new Executable() {
-            public void execute() throws Throwable {
-                tail.result();
-            }
-        });
+        final Tail tail = new Tail(null, 10, way + "ofile.txt", input);
+        tail.result();
+        assertTrue(comparison(Expect1, tail.outFile()));
     }
 }

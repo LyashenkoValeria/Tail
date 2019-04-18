@@ -4,7 +4,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.util.List;
-import java.io.IOException;
+
 
 public class TailLauncher {
     @Option(name = "-o", usage = "Output file")
@@ -23,7 +23,7 @@ public class TailLauncher {
         new TailLauncher().launch(args);
     }
 
-    private void launch(String[] args) {
+    private void launch(String[] args)  {
         CmdLineParser parser = new CmdLineParser(this);
 
         try {
@@ -33,6 +33,12 @@ public class TailLauncher {
             System.err.println("java -jar Tail.jar [-c num|-n num] [-o ofile] file0 file1 ...");
             parser.printUsage(System.err);
             return;
+        }
+        try {
+            Tail tail = new Tail(numberChar, numberLine, outputFile, inputFiles);
+            tail.result();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 }

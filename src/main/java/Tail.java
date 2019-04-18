@@ -18,13 +18,13 @@ public class Tail {
         this.inputFiles = inputFiles;
     }
 
-    public static List<String> reader (String input) throws IOException {//Читает строки из файла и складывает их в лист
-        BufferedReader reader = new BufferedReader(new FileReader(input));
-        String line;
+    public static List<String> reader (InputStream input) {//Читает строки из файла и складывает их в лист
+        Scanner reader = new Scanner(new InputStreamReader(input));
         List<String> lines = new ArrayList<String>();
-        while ((line = reader.readLine()) != null){
-            lines.add(line);
+        while ((reader.hasNextLine())){
+            lines.add(reader.nextLine());
         }
+        //reader.close();
         return (lines);
     }
 
@@ -79,10 +79,10 @@ public class Tail {
     public String getLinesForSeveralFiles (List<String> listOfFiles) throws IOException {
         StringBuilder result = new StringBuilder();
         if (listOfFiles.size() == 1) {
-            result = new StringBuilder(getLines(reader(listOfFiles.get(0))));
+            result = new StringBuilder(getLines(reader(new FileInputStream(listOfFiles.get(0)))));
         } else {
             for (String listOfFile : listOfFiles) {
-                result.append(listOfFile).append("\r\n").append(getLines(reader(listOfFile))).append("\r\n");
+                result.append(listOfFile).append("\r\n").append(getLines(reader(new FileInputStream(listOfFile)))).append("\r\n");
             }
         }
             return result.toString();
@@ -93,10 +93,10 @@ public class Tail {
     public String getCharsForSeveralFiles (List<String> listOfFiles) throws IOException {
         StringBuilder result = new StringBuilder();
         if (listOfFiles.size() == 1) {
-            result = new StringBuilder(getCharacters(reader(listOfFiles.get(0))));
+            result = new StringBuilder(getCharacters(reader(new FileInputStream(listOfFiles.get(0)))));
         } else {
             for (String listOfFile : listOfFiles) {
-                result.append(listOfFile).append("\r\n").append(getCharacters(reader(listOfFile))).append("\r\n");
+                result.append(listOfFile).append("\r\n").append(getCharacters(reader(new FileInputStream(listOfFile)))).append("\r\n");
             }
         }
         return result.toString();
@@ -104,19 +104,20 @@ public class Tail {
 
 
 
-    public void writer(String outputName, String output) throws IOException { //Выводит данные в выходной файл
+    public  void writer(String outputName, String output) throws IOException { //Выводит данные в выходной файл
         //На вход получает имя выходного файла и выводимые данные
         if (ofile == null) {
-            outputName = ".\\src\\main\\java\\ConsoleOut.txt";
-            ofile = ".\\src\\main\\java\\ConsoleOut.txt";
+            System.out.print(output);
+        } else {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+            writer.write(output);
+            writer.close();
         }
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
-        writer.write(output);
-        writer.close();   }
-
+    }
 
 
     public void result()throws IOException{
+
 
         if (numberLine != null && numberChar != null) throw new IOException("You can't use both flags -c and -n");
 
@@ -137,7 +138,7 @@ public class Tail {
 
             if(ofile != null){
                 File out = new File(ofile);
-                if (!out.exists()) throw new IOException("This output file is unreal");
+                if (!out.exists()) out.createNewFile();
             }
 
 
@@ -150,11 +151,10 @@ public class Tail {
                 }
             }
             else {
-                String console = ".\\src\\main\\java\\ConsoleIn.txt";
                 if (numberLine != null) {
-                    result = getLines(reader(console));
+                    result = getLines(reader(System.in));
                 } else {
-                    result = getCharacters(reader(console));
+                    result = getCharacters(reader(System.in));
                 }
             }
 
